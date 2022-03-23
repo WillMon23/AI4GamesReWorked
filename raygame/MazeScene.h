@@ -36,7 +36,7 @@ public:
 		NodeGraph::Node* node = nullptr;
 	};
 
-	static const int WIDTH = 28;
+	static const int WIDTH = 57;
 	static const int HEIGHT = 32;
 	static const int TILE_SIZE = 25;
 

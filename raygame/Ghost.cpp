@@ -4,6 +4,7 @@
 #include "raylib.h"
 #include "Transform2D.h"
 #include "PathfindComponent.h"
+#include "AABBCollider.h"
 #include "MoveComponent.h"
 #include "SpriteComponent.h"
 
@@ -17,6 +18,9 @@ Ghost::Ghost(float x, float y, float maxSpeed, float maxForce, int color, Maze* 
 	m_pathfindComponent->setColor(color);
 	addComponent(m_pathfindComponent);
 	addComponent(new SpriteComponent("Images/enemy.png"));
+	setCollider(new AABBCollider(Maze::TILE_SIZE, Maze::TILE_SIZE, this));
+
+	setMaxForce(100.0f);
 }
 
 Ghost::~Ghost()
