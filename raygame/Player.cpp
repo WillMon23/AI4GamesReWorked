@@ -19,6 +19,8 @@ void Player::start()
 	getTransform()->setScale({ Maze::TILE_SIZE, Maze::TILE_SIZE });
 	m_input = getComponent<InputComponent>();
 	setCollider(new AABBCollider(Maze::TILE_SIZE, Maze::TILE_SIZE, this));
+
+	setMaxForce(800.0f);
 	//Set spawn point
 	//Set move speed
 	//Set position clamps

@@ -111,7 +111,7 @@ DynamicArray<NodeGraph::Node*> NodeGraph::findPath(Node* start, Node* goal)
 				currentTarget->fScore = currentTarget->gScore + currentTarget->hScore;
 
 				//If the node on the edge already exists in the closed
-				if (!closedList.contains(currentTarget))
+				if (!closedList.contains(currentTarget)&& currentTarget->walkable)
 				{
 					//sets this target edge to be the current node 
 					currentTarget->previous = currentNode;
