@@ -52,6 +52,7 @@ public:
 	void setColor(int color) { m_color = color; }
 
 	void onEnabled() override { m_needPath = true; }
+	void onDisable() { m_needPath = false; }
 
 protected:
 	virtual MathLibrary::Vector2 findDestination();

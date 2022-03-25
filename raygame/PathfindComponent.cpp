@@ -15,40 +15,44 @@ void PathfindComponent::update(float deltaTime)
 	//Don't update if disabled or no target
 	if (!m_target)
 		return;
-
-	//Find the positions and tiles of the owner and target
-	MathLibrary::Vector2 ownerPosition = getOwner()->getTransform()->getWorldPosition();
-	MathLibrary::Vector2 destinationPosition = findDestination();
-	Maze::Tile ownerTile = m_maze->getTile(ownerPosition);
-	Maze::Tile destinationTile = m_maze->getTile(destinationPosition);
-
 	//Update the path if needed
 	if (m_needPath)
-		updatePath(destinationPosition);
+	{
+		//Find the positions and tiles of the owner and target
+		MathLibrary::Vector2 ownerPosition = getOwner()->getTransform()->getWorldPosition();
+		MathLibrary::Vector2 destinationPosition = findDestination();
+		Maze::Tile ownerTile = m_maze->getTile(ownerPosition);
+		Maze::Tile destinationTile = m_maze->getTile(destinationPosition);
 
-	//Find the position and tile of the next node
-	MathLibrary::Vector2 nextPosition = ownerPosition;
-	if (!m_path.getLength() <= 0)
-		nextPosition = m_path[0]->position;
-	Maze::Tile nextTile = m_maze->getTile(nextPosition);
 
-	//If owner is at the front node, go to the following node
-	if (ownerTile.x == nextTile.x && ownerTile.y == nextTile.y) {
+		
+
+		//Find the position and tile of the next node
+		MathLibrary::Vector2 nextPosition = ownerPosition;
 		if (!m_path.getLength() <= 0)
-			m_path.remove(0);
-		m_needPath = true;
+			nextPosition = m_path[0]->position;
+		Maze::Tile nextTile = m_maze->getTile(nextPosition);
+
+		//If owner is at the front node, go to the following node
+		if (ownerTile.x == nextTile.x && ownerTile.y == nextTile.y) {
+			if (!m_path.getLength() <= 0)
+				m_path.remove(0);
+			m_needPath = true;
+		}
+
+		//Find the direction
+		MathLibrary::Vector2 direction = { 0.0f, 0.0f };
+		if (!m_path.getLength() <= 0)
+			direction = MathLibrary::Vector2::normalize(m_path[0]->position - ownerPosition);
+
+		//Calculate the force
+		MathLibrary::Vector2 desiredVelocity = direction * m_owner->getMaxForce();
+		MathLibrary::Vector2 steeringForce = desiredVelocity - m_owner->getMoveComponent()->getVelocity();
+
+		m_owner->getMoveComponent()->setVelocity(steeringForce);
 	}
 
-	//Find the direction
-	MathLibrary::Vector2 direction = { 0.0f, 0.0f };
-	if (!m_path.getLength() <= 0)
-		direction = MathLibrary::Vector2::normalize(m_path[0]->position - ownerPosition);
-
-	//Calculate the force
-	MathLibrary::Vector2 desiredVelocity = direction * m_owner->getMaxForce();
-	MathLibrary::Vector2 steeringForce = desiredVelocity - m_owner->getMoveComponent()->getVelocity();
-
-	m_owner->getMoveComponent()->setVelocity(steeringForce);
+	updatePath(findDestination());
 }
 
 void PathfindComponent::draw()
