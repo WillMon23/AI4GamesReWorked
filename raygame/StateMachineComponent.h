@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+#include <Vector2.h>
 
 enum State
 {
@@ -25,11 +26,11 @@ public:
 
 private:
 	State m_currentState;
-	SeekComponent* m_seekComponent;
 	WanderComponent* m_wanderComponent;
 	PathfindComponent* m_pathfindComponent;
+	float m_timesUp;
 	float m_seekForce;
 	float m_wanderForce;
-	float m_seekRange = 300;
+	MathLibrary::Vector2 m_pathFindForce;
 };
 

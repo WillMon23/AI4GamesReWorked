@@ -10,6 +10,7 @@
 #include "MoveComponent.h"
 #include "SpriteComponent.h"
 #include "StateMachineComponent.h"
+#include "Engine.h"
 
 Ghost::Ghost(float x, float y, float maxSpeed, float maxForce, int color, Maze* maze)
 	: Agent(x, y, "Ghost", maxSpeed, maxForce)
@@ -22,12 +23,10 @@ Ghost::Ghost(float x, float y, float maxSpeed, float maxForce, int color, Maze* 
 	addComponent(m_pathfindComponent);
 	addComponent(new SpriteComponent("Images/enemy.png"));
 	setCollider(new AABBCollider(Maze::TILE_SIZE, Maze::TILE_SIZE, this));
-	addComponent(new WanderComponent(30,30,100));
-	addComponent<SeekComponent>();
-	getComponent<SeekComponent>()->setTarget(getTarget());
+	addComponent(new WanderComponent(0,50,30));
 	addComponent<StateMachineComponent>();
 
-	setMaxForce(100.0f);
+	setMaxForce(500.0f);
 }
 
 Ghost::~Ghost()
@@ -60,8 +59,10 @@ void Ghost::onCollision(Actor* other)
 
 		getMoveComponent()->setVelocity({ 0, 0 });
 	}
+	//Check if the other actor is named player
 	if (other->getName() == "Player")
-		getComponent<StateMachineComponent>()->setCurrentState(WANDER);
+		//Closes Game Application
+		Engine::CloseApplication();
 }
 
 void Ghost::setTarget(Actor* target)

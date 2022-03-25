@@ -52,7 +52,9 @@ public:
 	void setColor(int color) { m_color = color; }
 
 	void onEnabled() override { m_needPath = true; }
-	void onDisable() { m_needPath = false; }
+
+	void onEnableMovememt() { m_pathIn = true; }
+	void onDisableMovement() { m_pathIn = false; }
 
 protected:
 	virtual MathLibrary::Vector2 findDestination();
@@ -60,6 +62,7 @@ protected:
 private:
 	Maze* m_maze;
 	DynamicArray<NodeGraph::Node*> m_path;
+	bool m_pathIn;
 	Agent* m_owner;
 	Actor* m_target = nullptr;
 	bool m_needPath = true;

@@ -3,6 +3,7 @@
 #include "MoveComponent.h"
 #include "SpriteComponent.h"
 #include "Transform2D.h"
+#include "Engine.h"
 #include "MazeScene.h"
 #include "Wall.h"
 #include "AABBCollider.h"
@@ -19,11 +20,11 @@ void Player::start()
 	getTransform()->setScale({ Maze::TILE_SIZE, Maze::TILE_SIZE });
 	m_input = getComponent<InputComponent>();
 	setCollider(new AABBCollider(Maze::TILE_SIZE, Maze::TILE_SIZE, this));
-
-	setMaxForce(800.0f);
 	//Set spawn point
 	//Set move speed
 	//Set position clamps
+
+	setMaxForce(500.0f);
 }
 
 void Player::update(float deltaTime)
@@ -48,4 +49,7 @@ void Player::onCollision(Actor* other)
 		//getTransform()->setWorldPostion(getTransform()->getWorldPosition() - getMoveComponent()->getVelocity().getNormalized() * -.05f);
 		applyForce(getCollider()->getCollisionNormal() * -1 * getMoveComponent()->getVelocity().getMagnitude());
 	}
+
+	if (other->getName() == "Goal")
+		Engine::CloseApplication();
 }

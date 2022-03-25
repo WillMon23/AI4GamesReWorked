@@ -15,8 +15,7 @@ void PathfindComponent::update(float deltaTime)
 	//Don't update if disabled or no target
 	if (!m_target)
 		return;
-	//Update the path if needed
-	if (m_needPath)
+	if (m_pathIn)
 	{
 		//Find the positions and tiles of the owner and target
 		MathLibrary::Vector2 ownerPosition = getOwner()->getTransform()->getWorldPosition();
@@ -25,7 +24,8 @@ void PathfindComponent::update(float deltaTime)
 		Maze::Tile destinationTile = m_maze->getTile(destinationPosition);
 
 
-		
+		updatePath(destinationPosition);
+
 
 		//Find the position and tile of the next node
 		MathLibrary::Vector2 nextPosition = ownerPosition;
@@ -52,7 +52,7 @@ void PathfindComponent::update(float deltaTime)
 		m_owner->getMoveComponent()->setVelocity(steeringForce);
 	}
 
-	updatePath(findDestination());
+	
 }
 
 void PathfindComponent::draw()

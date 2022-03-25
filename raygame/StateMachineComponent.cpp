@@ -1,62 +1,77 @@
 #include "StateMachineComponent.h"
 #include "Actor.h"
-#include "SeekComponent.h"
 #include "PathfindComponent.h"
 #include "WanderComponent.h"
+#include "MoveComponent.h"
 #include "Transform2D.h"
 
 void StateMachineComponent::start()
 {
 	Component::start();
 
-	m_seekComponent = getOwner()->getComponent<SeekComponent>();
-	m_seekComponent->setTarget(getOwner());
-	m_seekForce = m_seekComponent->getSteeringForce();
-
+	//Gets the owners Wander Compoent 
 	m_wanderComponent = getOwner()->getComponent<WanderComponent>();
+	//Gets The Force being Used from the users Wander Component
 	m_wanderForce = m_wanderComponent->getSteeringForce();
-
+	//Gets the owners pathComponent
 	m_pathfindComponent = getOwner()->getComponent<PathfindComponent>();
-
+	//Sets Current State to Idle
 	m_currentState = IDLE;
 }
 
 void StateMachineComponent::update(float deltaTime)
 {
 	Component::update(deltaTime);
+	//Sets a timer taking delta time for updates 
+	m_timesUp += deltaTime;
 
-	MathLibrary::Vector2 targetPos = m_seekComponent->getTarget()->getTransform()->getWorldPosition();
-	MathLibrary::Vector2 ownerPos = getOwner()->getTransform()->getWorldPosition();
-	float distanceFromTarget = (targetPos - ownerPos).getMagnitude();
-
-	bool targetInRange = distanceFromTarget <= m_seekRange;
-
+	//Checks for the current state of the game 
 	switch (m_currentState)
 	{
+		//Case Idle
 	case IDLE:
-		m_seekComponent->setSteeringForce(0);
-		m_wanderComponent->setSteeringForce(1000.0f);
-		m_pathfindComponent->onDisable();
-
-		if (targetInRange)
-			setCurrentState(SEEK);
-
-		break;
-	case WANDER:
-		m_seekComponent->setSteeringForce(0);
-		m_wanderComponent->setSteeringForce(1000);
-		m_pathfindComponent->onEnabled();
-
-		if (targetInRange)
-			setCurrentState(SEEK);
-
-		break;
-	case SEEK:
-		m_seekComponent->setSteeringForce(m_seekForce);
+		//All states are still
 		m_wanderComponent->setSteeringForce(0);
+		m_pathfindComponent->onDisableMovement();
 
-		if (!targetInRange)
-			setCurrentState(WANDER);
+		//Once timer his 4 seconds 
+		if (m_timesUp > 4)
+		{
+			//Changes the current state to seek
+			m_currentState = SEEK;
+			//rests the timer to 0
+			m_timesUp = 0;
+		}
+		break;
+		//Case Wander
+	case WANDER:
+		//Meant to disable pathfinding 
+		m_pathfindComponent->onDisableMovement();
+		//Activates the force for wandering 
+		m_wanderComponent->setSteeringForce(m_wanderForce);
+		//Once The Time is up reaches 5
+		if (m_timesUp > 5)
+		{
+			//current state will change to seek
+			m_currentState = SEEK;
+			//rests the timer to 0
+			m_timesUp = 0;
+		}
+		break;
+		//Case Seek
+	case SEEK:
+		//pathfind component is enabbled 
+		m_pathfindComponent->onEnableMovememt();
+		//Sets tje steering force to 0
+		m_wanderComponent->setSteeringForce(0);
+		//Once The Time is up reaches 10
+		if (m_timesUp > 10)
+		{
+			//current state will change to Wander
+			m_currentState = WANDER;
+			//rests the timer to 0
+			m_timesUp = 0;
+		}
 
 		break;
 	}
