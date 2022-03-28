@@ -26,7 +26,7 @@ Ghost::Ghost(float x, float y, float maxSpeed, float maxForce, int color, Maze* 
 	addComponent(new WanderComponent(0,50,30));
 	addComponent<StateMachineComponent>();
 
-	setMaxForce(500.0f);
+	setMaxForce(400.0f);
 }
 
 Ghost::~Ghost()

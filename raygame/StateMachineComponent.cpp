@@ -35,7 +35,7 @@ void StateMachineComponent::update(float deltaTime)
 		m_pathfindComponent->onDisableMovement();
 
 		//Once timer his 4 seconds 
-		if (m_timesUp > 4)
+		if (m_timesUp > 5)
 		{
 			//Changes the current state to seek
 			m_currentState = SEEK;
@@ -50,7 +50,7 @@ void StateMachineComponent::update(float deltaTime)
 		//Activates the force for wandering 
 		m_wanderComponent->setSteeringForce(m_wanderForce);
 		//Once The Time is up reaches 5
-		if (m_timesUp > 5)
+		if (m_timesUp > 6)
 		{
 			//current state will change to seek
 			m_currentState = SEEK;
@@ -65,7 +65,7 @@ void StateMachineComponent::update(float deltaTime)
 		//Sets tje steering force to 0
 		m_wanderComponent->setSteeringForce(0);
 		//Once The Time is up reaches 10
-		if (m_timesUp > 10)
+		if (m_timesUp > 5)
 		{
 			//current state will change to Wander
 			m_currentState = WANDER;
