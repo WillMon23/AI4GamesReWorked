@@ -101,20 +101,21 @@ DynamicArray<NodeGraph::Node*> NodeGraph::findPath(Node* start, Node* goal)
 				//Current target being Looked At 
 				Node* currentTarget = currentNode->edges[i].target;
 
-				//Callcualtes edges the G Score by ading the edges cost and the currentNodes g Score  
-				currentTarget->gScore = currentNode->edges[i].cost + currentNode->gScore;
-				
-				//Calculates the h Score by getting the manhattan distance of the current edge and the goal 
-				currentTarget->hScore = abs(currentTarget->position.x - goal->position.x) + abs(currentTarget->position.y - goal->position.y);
-
-				//Calculates the f score by adding the g Score and the h Score together 
-				currentTarget->fScore = currentTarget->gScore + currentTarget->hScore;
-
 				//If the node on the edge already exists in the closed
-				if (!closedList.contains(currentTarget)&& currentTarget->walkable)
+				if (!closedList.contains(currentTarget)&& currentTarget->walkable && !openList.contains(currentTarget))
 				{
+					//Callcualtes edges the G Score by ading the edges cost and the currentNodes G Score
+					currentTarget->gScore = currentNode->edges[i].cost + currentNode->gScore;
+
+					//Calculates the h Score by getting the manhattan distance of the current edge and the goal
+					currentTarget->hScore = abs(currentTarget->position.x - goal->position.x) + abs(currentTarget->position.y - goal->position.y);
+
+					//Calculates the f score by adding the g Score and the h Score together 
+					currentTarget->fScore = currentTarget->gScore + currentTarget->hScore;
+
 					//sets this target edge to be the current node 
 					currentTarget->previous = currentNode;
+
 					//Sets the hex color value to be that of (RED)
 					currentTarget->color = 0xFB0F0FFF;
 				}
