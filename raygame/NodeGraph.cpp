@@ -101,15 +101,23 @@ DynamicArray<NodeGraph::Node*> NodeGraph::findPath(Node* start, Node* goal)
 				//Current target being Looked At 
 				Node* currentTarget = currentNode->edges[i].target;
 
+				
 				//If the node on the edge already exists in the closed
-				if (!closedList.contains(currentTarget)&& currentTarget->walkable && !openList.contains(currentTarget))
+				if (!closedList.contains(currentTarget) && currentTarget->walkable)
 				{
 					//Callcualtes edges the G Score by ading the edges cost and the currentNodes G Score
 					currentTarget->gScore = currentNode->edges[i].cost + currentNode->gScore;
 
 					//Calculates the h Score by getting the manhattan distance of the current edge and the goal
 					currentTarget->hScore = abs(currentTarget->position.x - goal->position.x) + abs(currentTarget->position.y - goal->position.y);
+				}
+				else
+					// Skips any node thats has already been calculated
+					continue;
 
+				//Checks to see if the current target is in the open list or the current target is gScore is larger then the currrent nodes gScore
+				if (!openList.contains(currentTarget) || currentTarget->gScore > currentNode->gScore)
+				{
 					//Calculates the f score by adding the g Score and the h Score together 
 					currentTarget->fScore = currentTarget->gScore + currentTarget->hScore;
 
@@ -118,13 +126,10 @@ DynamicArray<NodeGraph::Node*> NodeGraph::findPath(Node* start, Node* goal)
 
 					//Sets the hex color value to be that of (RED)
 					currentTarget->color = 0xFB0F0FFF;
-				}
-				else
-					// Skips any node thats has already been calculated
-					continue;
 
-				//Addeds the current edge target
-				openList.addItem(currentTarget);
+					//Addeds the current edge target to the open list 
+					openList.addItem(currentTarget);
+				}
 			}
 		}
 		//If the current Node is that of the goal 
