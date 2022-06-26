@@ -101,9 +101,11 @@ DynamicArray<NodeGraph::Node*> NodeGraph::findPath(Node* start, Node* goal)
 				//Current target being Looked At 
 				Node* currentTarget = currentNode->edges[i].target;
 
+				if (!currentTarget->walkable)
+					continue;
 				
 				//If the node on the edge already exists in the closed
-				if (!closedList.contains(currentTarget) && currentTarget->walkable)
+				if (!closedList.contains(currentTarget) )
 				{
 					//Callcualtes edges the G Score by ading the edges cost and the currentNodes G Score
 					currentTarget->gScore = currentNode->edges[i].cost + currentNode->gScore;
